@@ -16,7 +16,11 @@ public class OperationsServiceSample
     public async Task<string> GetOperationsDescriptionAsync(CancellationToken cancellationToken)
     {
         var accounts = await _investApiClient.Users.GetAccountsAsync();
-        var accountId = accounts.Accounts.First().Id;
+        var accountId = accounts.Accounts.FirstOrDefault()?.Id;
+        if (accountId == null)
+        {
+            return "No accounts found";
+        }
 
         var operations = _investApiClient.Operations;
         var portfolio = await operations.GetPortfolioAsync(new PortfolioRequest {AccountId = accountId},
@@ -42,7 +46,11 @@ public class OperationsServiceSample
     public string GetOperationsDescription()
     {
         var accounts = _investApiClient.Users.GetAccounts();
-        var accountId = accounts.Accounts.First().Id;
+        var accountId = accounts.Accounts.FirstOrDefault()?.Id;
+        if (accountId == null)
+        {
+            return "No accounts found";
+        }
 
         var operations = _investApiClient.Operations;
         var portfolio = operations.GetPortfolio(new PortfolioRequest {AccountId = accountId});
